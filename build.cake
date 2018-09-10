@@ -3,6 +3,8 @@
 #tool "nuget:?package=JetBrains.dotCover.CommandLineTools&version=2018.1.0"
 #load "tasks/variables.cake";
 
+string msBuildPath = @"C:\Program Files (x86)\VisualStudio\vs2017_pro\MSBuild\15.0\Bin\MSBuild.exe";
+
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 var artifacts = new DirectoryPath("./artifacts").MakeAbsolute(Context.Environment);
@@ -38,7 +40,12 @@ Task("Restore (Unix)")
     .WithCriteria(IsRunningOnUnix)
     .Does(() =>
 {
-    MSBuild("./LSP.sln", settings => settings.SetConfiguration(configuration).WithTarget("Restore"));
+    MSBuild("./LSP.sln", settings => {
+        settings.ToolPath = msBuildPath;
+        settings
+            .SetConfiguration(configuration)
+            .WithTarget("Restore");
+    });
 });
 
 Task("Restore (Windows)")
@@ -56,10 +63,12 @@ Task("Build")
     .IsDependentOn("Restore")
     .DoesForEach(GetFiles("src/**/*.csproj").Concat(GetFiles("test/**/*.csproj")), (project) =>
     {
-        MSBuild(project, settings =>
+        MSBuild(project, settings => {
+            settings.ToolPath = msBuildPath;
             settings
                 .SetConfiguration(configuration)
-                .WithTarget("Build"));
+                .WithTarget("Build");
+        });
     });
 
 Task("TestSetup")
