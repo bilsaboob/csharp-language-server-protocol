@@ -34,6 +34,12 @@ namespace OmniSharp.Extensions.LanguageServer.Server
             return options;
         }
 
+        public static LanguageServerOptions InitializeNow(this LanguageServerOptions options, bool initialize)
+        {
+            options.Initialize = initialize;
+            return options;
+        }
+
         public static LanguageServerOptions WithRequestProcessIdentifier(this LanguageServerOptions options, IRequestProcessIdentifier requestProcessIdentifier)
         {
             options.RequestProcessIdentifier = requestProcessIdentifier;

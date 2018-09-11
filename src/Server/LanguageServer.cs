@@ -46,14 +46,14 @@ namespace OmniSharp.Extensions.LanguageServer.Server
         private readonly IServiceProvider _serviceProvider;
         private SupportedCapabilities _supportedCapabilities;
 
-        public static Task<ILanguageServer> From(Action<LanguageServerOptions> optionsAction)
+        public static Task<LanguageServer> From(Action<LanguageServerOptions> optionsAction)
         {
             var options = new LanguageServerOptions();
             optionsAction(options);
             return From(options);
         }
 
-        public static async Task<ILanguageServer> From(LanguageServerOptions options)
+        public static async Task<LanguageServer> From(LanguageServerOptions options)
         {
             var server = new LanguageServer(
                 options.Input,
@@ -72,7 +72,8 @@ namespace OmniSharp.Extensions.LanguageServer.Server
             if (options.AddDefaultLoggingProvider)
                 options.LoggerFactory.AddProvider(new LanguageServerLoggerProvider(server));
 
-            await server.Initialize();
+            if(options.Initialize)
+                await server.Initialize();
 
             return server;
         }
@@ -224,7 +225,7 @@ namespace OmniSharp.Extensions.LanguageServer.Server
             }
         }
 
-        private async Task Initialize()
+        public async Task Initialize()
         {
             _connection.Open();
 

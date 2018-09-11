@@ -244,9 +244,9 @@ namespace OmniSharp.Extensions.LanguageServer.Client.Protocol
 
             _dispatcher = dispatcher;
             _dispatcher.Serializer = Serializer;
-            _sendLoop = SendLoop();
-            _receiveLoop = ReceiveLoop();
-            _dispatchLoop = DispatchLoop();
+            _sendLoop = Task.Factory.StartNew(async()=>SendLoop());
+            _receiveLoop = Task.Factory.StartNew(async()=>ReceiveLoop());
+            _dispatchLoop = Task.Factory.StartNew(async()=>DispatchLoop());
 
             _hasDisconnectedTask = Task.WhenAll(_sendLoop, _receiveLoop, _dispatchLoop);
         }
@@ -483,10 +483,8 @@ namespace OmniSharp.Extensions.LanguageServer.Client.Protocol
         /// </returns>
         async Task SendLoop()
         {
-            await Task.Yield();
-
-            Log.LogInformation("Send loop started.");
-
+            Log.LogInformation($"Send loop started.");
+            
             try
             {
                 while (_outgoing.TryTake(out object outgoing, -1, _cancellation))
@@ -544,8 +542,6 @@ namespace OmniSharp.Extensions.LanguageServer.Client.Protocol
         /// </returns>
         async Task ReceiveLoop()
         {
-            await Task.Yield();
-
             Log.LogInformation("Receive loop started.");
 
             try
@@ -806,8 +802,6 @@ namespace OmniSharp.Extensions.LanguageServer.Client.Protocol
         /// </returns>
         async Task DispatchLoop()
         {
-            await Task.Yield();
-
             Log.LogInformation("Dispatch loop started.");
 
             try

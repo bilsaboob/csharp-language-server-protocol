@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace OmniSharp.Extensions.LanguageServer.Server
 {
-    class CompositeDisposable : IDisposable
+    public class CompositeDisposable : IDisposable
     {
         private readonly List<IDisposable> _instances;
 

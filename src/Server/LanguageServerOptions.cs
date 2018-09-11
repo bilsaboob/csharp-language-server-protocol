@@ -19,6 +19,7 @@ namespace OmniSharp.Extensions.LanguageServer.Server
 
         public Stream Input { get; set; }
         public Stream Output { get; set; }
+        public bool Initialize { get; set; } = true;
         public LogLevel MinimumLogLevel { get; set; } = LogLevel.Information;
         public ILoggerFactory LoggerFactory { get; set; } = new LoggerFactory();
         public ISerializer Serializer { get; set; } = Protocol.Serialization.Serializer.Instance;

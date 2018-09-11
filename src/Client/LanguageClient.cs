@@ -260,7 +260,7 @@ namespace OmniSharp.Extensions.LanguageServer.Client
                 };
 
                 Log.LogDebug("Sending 'initialize' message to language server...");
-
+                
                 var result = await SendRequest<InitializeResult>("initialize", initializeParams, cancellationToken).ConfigureAwait(false);
                 if (result == null)
                     throw new LspException("Server replied to 'initialize' request with a null response.");
@@ -271,7 +271,7 @@ namespace OmniSharp.Extensions.LanguageServer.Client
 
                 Log.LogDebug("Sending 'initialized' notification to language server...");
 
-                SendNotification("initialized");
+                SendNotification("initialized", new InitializedParams());
 
                 Log.LogDebug("Sent 'initialized' notification to language server.");
 
